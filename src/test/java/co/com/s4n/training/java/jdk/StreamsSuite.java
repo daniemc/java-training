@@ -48,6 +48,18 @@ public class StreamsSuite {
     }
 
     @Test
+    public void testStreams22(){
+        Optional<Object> first = Arrays.asList()
+                .stream()
+                .findFirst();
+
+        assertTrue(!first.isPresent());
+
+        assertEquals("BLA",first.orElseGet(()->"BLA"));
+
+    }
+
+    @Test
     public void testStreams3(){
         Optional<String> first = Stream.of("a1", "a2", "a3")
                 .findFirst();
