@@ -2,6 +2,11 @@ package co.com.s4n.training.java.jdk;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.IntBinaryOperator;
@@ -242,5 +247,41 @@ public class LambdaSuite {
         Consumer<Integer> cons = i.sumaSupplier(x, y, z);
 
         cons.accept(new Integer(4));
+    }
+
+    class Family{
+        private String name;
+        private Integer age;
+
+        public Family(String name, Integer age){
+            this.name = name;
+            this.age = age;
+        }
+
+        public String getName(){
+            return this.name;
+        }
+
+        public Integer getAge() {
+            return this.age;
+        }
+    }
+
+    @Test
+    public void exampleListTest() {
+        List<Family> myFamily = new ArrayList<Family>();
+
+        myFamily.add(new Family("Leticia", 45));
+        myFamily.add(new Family("Albeiro", 55));
+        myFamily.add(new Family("Daniel", 26));
+        myFamily.add(new Family("Emilio", 3));
+
+
+        myFamily.sort((mf1, mf2)->mf1.getName().compareTo(mf2.getName()));
+        // myFamily.sort(Comparator.comparing(Family::getName));
+
+        myFamily.forEach((human)-> System.out.println(human.getName()));
+
+        // assertThat(humans.get(0), equalTo(new Human("Albeiro", 55)));
     }
 }
