@@ -3,12 +3,11 @@ package co.com.s4n.training.java.jdk;
 import static org.junit.Assert.*;
 
 import co.com.s4n.training.java.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -77,6 +76,23 @@ public class StreamsSuite {
 
     }
 
+    @Test
+    public void testStreams44(){
+
+        IntStream numbers = IntStream.rangeClosed(1, 4);
+
+        List<Integer> resNumberscollect = numbers.mapToObj(i->i).collect(Collectors.toList());
+
+        assertTrue(resNumberscollect.size()==4);
+
+        assertTrue(resNumberscollect.contains(1));
+        assertTrue(resNumberscollect.contains(2));
+        assertTrue(resNumberscollect.contains(3));
+        assertTrue(resNumberscollect.contains(4));
+
+
+    }
+
 
     @Test
     public void testStreams6(){
@@ -85,6 +101,26 @@ public class StreamsSuite {
                 .average();
 
         assertEquals(5D,average.orElseGet(()->666),0D);
+
+    }
+
+    @Test
+    public void testStreams77(){
+
+        AtomicInteger maxNum = new AtomicInteger();
+
+        Arrays.asList("a1", "a2", "a3")
+                .forEach(s -> {
+                    String numS = s.substring(1);
+                    Integer num = Integer.parseInt(numS);
+
+                    if (num > maxNum.get()) {
+                        maxNum.set(num);
+                    }
+                });
+
+        assertEquals(3, maxNum.get());
+
 
     }
 
@@ -209,7 +245,9 @@ public class StreamsSuite {
                     return s.toUpperCase();
                 })
                 .anyMatch(s -> {
+                    System.out.println("any: " + s);
                     return s.startsWith("A");
+
                 });
 
         assertTrue(b);
@@ -234,7 +272,19 @@ public class StreamsSuite {
     @Test
     public void testStreams13() {
         //TODO: cambia el orden de map y filter
-        assertTrue(true);
+        List<String> collect = Stream.of("d2", "a2", "b1", "b3", "c")
+                .filter(s -> {
+                    return s.startsWith("A");
+                })
+                .map(s -> {
+                    return s.toUpperCase();
+                }).collect(Collectors.toList());
+
+        // con las condiciones anteriores no pasa
+        assertFalse(collect.size()==1);
+        assertFalse(collect.contains("A2"));
+
+
     }
 
     @Test(expected = java.lang.IllegalStateException.class)
@@ -313,6 +363,8 @@ public class StreamsSuite {
                         .collect(Collectors.toList());
 
         assertTrue(filtered.size()==2);
+        assertTrue(filtered.toString().contains("Peter"));
+        assertTrue(filtered.toString().contains("Pamela"));
 
     }
 
