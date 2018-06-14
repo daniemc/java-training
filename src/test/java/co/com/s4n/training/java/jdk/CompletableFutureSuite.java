@@ -341,7 +341,7 @@ public class CompletableFutureSuite {
         try {
             assertEquals(anotherFuture.get(), "2");
         } catch (Exception e) {
-
+            assertTrue(false);
         }
     }
 
@@ -364,7 +364,7 @@ public class CompletableFutureSuite {
         try {
             assertEquals(anotherFuture.get(), "2");
         } catch (Exception e) {
-
+            assertTrue(false);
         }
     }
 
@@ -416,9 +416,10 @@ public class CompletableFutureSuite {
                 }, executorService);
 
         try {
-            printMessage(""+future.get());
+            // printMessage(""+future.get());
+            assertEquals("Hello I'm Async 1 I'm Async 2 I'm Async 3", future.get());
         }catch (Exception e) {
-
+            assertTrue(false);
         }
     }
 
@@ -441,9 +442,10 @@ public class CompletableFutureSuite {
                 });
 
         try {
-            printMessage(""+future.get());
+            // printMessage(""+future.get());
+            assertEquals("Hello I'm Async 1 I'm Async 2 I'm Async 3", future.get());
         }catch (Exception e) {
-
+            assertTrue(false);
         }
     }
 
@@ -471,9 +473,10 @@ public class CompletableFutureSuite {
                 }, executorService);
 
         try {
-            printMessage(""+future.get());
+            // printMessage(""+future.get());
+            assertEquals("Hello I'm Async 1 I'm Async 2 I'm Async 3", future.get());
         }catch (Exception e) {
-
+            assertTrue(false);
         }
     }
 
@@ -499,9 +502,10 @@ public class CompletableFutureSuite {
                 });
 
         try {
-            printMessage(""+future.get());
+            // printMessage(""+future.get());
+            assertEquals("Hello I'm Async 1 I'm Async 2 I'm Async 3", future.get());
         }catch (Exception e) {
-
+            assertTrue(false);
         }
     }
 
@@ -531,9 +535,10 @@ public class CompletableFutureSuite {
                 }, executorService4);
 
         try {
-            printMessage(""+future.get());
+            // printMessage(""+future.get());
+            assertEquals("Hello I'm Async 1 I'm Async 2 I'm Async 3", future.get());
         }catch (Exception e) {
-
+            assertTrue(false);
         }
     }
 
