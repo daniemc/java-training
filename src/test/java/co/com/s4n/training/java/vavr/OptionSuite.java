@@ -277,4 +277,81 @@ public class OptionSuite {
                                    For(esPar(4), c -> Option(d+c))).toOption();
         assertEquals(integers,Some(6));
     }
+
+    @Test
+    public void testOptionMapFlat(){
+        Option<Integer> opt = Option.of(1);
+        Option<Option<Integer>> optOpt = opt.map(f -> Option.of(identityOrNull(f - 3)));
+        Option<Integer> flatOpt = opt.flatMap(f -> Option.of(identityOrNull(f - 3)));
+
+    }
+
+    private Option<Integer> add(int num1, int num2) {
+        System.out.println("Adding: " + num1 + " + " + num2);
+        return Option.of(num1 + num2);
+    }
+
+    private Option<Integer> subtract(int num1, int num2) {
+        System.out.println("Subtracting: "+ num1 + " - " + num2);
+        return num1 - num2 > 0 ? Option.of(num1 + num2) : None();
+    }
+
+    @Test
+    public void testOptionFlatMap(){
+        //When there's not need of previous parameters (can be same parameter)
+        Option<Integer> res1 = add(1, 1)
+                .flatMap(num -> add(num , 1))
+                .flatMap(num -> add(num , 1))
+                .flatMap(num -> add(num , 1))
+                .flatMap(num -> add(num , 1));
+
+        //When there's need of previous parameters (must use different var)
+        Option<Integer> res2 = add(1, 1)
+                .flatMap(num1 -> add(num1 , 1)
+                    .flatMap(num2 -> add(num2 , 1)
+                        .flatMap(num3 -> add(num3 , 1)
+                            .flatMap(num4 -> add(num4 , 1)))));
+
+        assertEquals(res1.getOrElse(0).intValue(), 6);
+        assertEquals(res2.getOrElse(0).intValue(), 6);
+
+    }
+
+    @Test
+    public void testOptionFlatMapNone(){
+        //When there's not need of previous parameters (can be same var)
+        Option<Integer> res1 = add(1, 1)
+                .flatMap(num -> add(num , 1))
+                .flatMap(num -> add(num , 1))
+                .flatMap(num -> add(num , 1))
+                .flatMap(num -> add(num , 1))
+                .flatMap(num -> subtract(num, 10))
+                .flatMap(num -> add(num , 1))
+                .flatMap(num -> add(num , 1));
+
+        //When there's need of previous parameters (must use different var)
+        Option<Integer> res2 = add(1, 1)
+                .flatMap(num1 -> add(num1 , 1)
+                    .flatMap(num2 -> add(num2 , 1)
+                        .flatMap(num3 -> add(num3 , 1)
+                            .flatMap(num4 -> add(num4 , 1)
+                                .flatMap(num5 -> subtract(num5, 10)
+                                    .flatMap(num6 -> add(num6 , 1)
+                                        .flatMap(num7 -> add(num7 , 1))))))));
+
+        assertEquals(res1, Option.none());
+        assertEquals(res2, Option.none());
+
+    }
+
+    @Test
+    public void flatMapFor(){
+        Option<Integer> res =
+                For(add(1, 1), num ->
+                For(add(num, 1), num2 ->
+                For(add(num2, 1), num3 ->
+                    add(num3, 1)))).toOption();
+
+        assertEquals(res.getOrElse(0).intValue(), 5);
+    }
 }
