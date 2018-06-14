@@ -347,7 +347,7 @@ public class OptionSuite {
     @Test
     public void testFlatMapFor(){
 
-        // sintactic suggar
+        // sintactic suggar for flatMap
         Option<Integer> res =
                 For(add(1, 1), num ->
                 For(add(num, 1), num2 ->
