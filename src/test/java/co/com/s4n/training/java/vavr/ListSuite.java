@@ -3,6 +3,7 @@ package co.com.s4n.training.java.vavr;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -49,6 +50,37 @@ public class ListSuite {
         List<Integer> expectedTail = List.of(2,3);
         List<Integer> tail = list1.tail();
         assertEquals(tail, expectedTail);
+    }
+
+    @Test
+    public void testTailSize1(){
+        List<Integer> list1 = List.of(1);
+        List<Integer> expectedTail = List.of();
+        List<Integer> tail = list1.tail();
+        assertEquals(tail, expectedTail);
+    }
+
+    @Test(expected = java.util.NoSuchElementException.class)
+    public void testHeadSize0(){
+        List<Integer> list1 = List.of();
+        Integer expetedHead = 0;
+        Integer head = list1.head();
+        assertEquals(head, expetedHead);
+    }
+
+    @Test
+    public void testHeadOptionSize0(){
+        List<Integer> list1 = List.of();
+        Option head = list1.headOption();
+        assertEquals(head, Option.none());
+    }
+
+    @Test
+    public void testHeadOptionSize1(){
+        List<Integer> list1 = List.of(1, 2, 3);
+        Option head = list1.headOption();
+        assertEquals(head, Option.some(1));
+        assertEquals(1, head.getOrElse(1));
     }
 
     @Test
