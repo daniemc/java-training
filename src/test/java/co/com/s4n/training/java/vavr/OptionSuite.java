@@ -24,6 +24,60 @@ import static org.junit.Assert.assertTrue;
 
 public class OptionSuite {
 
+    @Test
+    public void testOptionConstruction1(){
+        Option<Integer> opt = Option(1);
+        assertTrue(opt.isDefined());
+        assertEquals(opt, Some(1));
+    }
+
+    @Test
+    public void testOptionConstruction2(){
+        Option<Integer> opt = Option(null);
+        assertEquals(opt, Option.none());
+    }
+
+    private Boolean isEvenOrNull(Integer num){
+        return num%2 == 0 ? true : null;
+    }
+
+    @Test
+    public void testOptionConstruction3(){
+        Option<Boolean> opt = Option(isEvenOrNull(1));
+        assertEquals(opt, Option.none());
+    }
+
+    private Integer identityOrNull(Integer num){
+        return num%2 == 0 ? new Integer(num) : null;
+    }
+
+    @Test
+    public void testOptionFilter(){
+        Option<Integer> opt = Option(identityOrNull(2));
+        Option<Integer> optFiltered = opt.filter(num -> num.intValue() < 4);
+        assertEquals(optFiltered.getOrElse(0).intValue(), 2);
+    }
+
+    @Test
+    public void testOptionNoneFilter(){
+        Option<Integer> opt = Option(identityOrNull(1));
+        Option<Integer> optFiltered = opt.filter(num -> num.intValue() < 4);
+        assertEquals(optFiltered, Option.none());
+    }
+
+    @Test
+    public void testOptionWithMap(){
+        Option<Integer> opt = Option(identityOrNull(2));
+        Option<Integer> optFiltered = opt.map(num -> num * 4);
+        assertEquals(optFiltered.getOrElse(0).intValue(), 8);
+    }
+
+    @Test
+    public void testOptionWithMapOnNone(){
+        Option<Integer> opt = Option(identityOrNull(3));
+        Option<Integer> optFiltered = opt.map(num -> num * 4);
+        assertEquals(optFiltered, Option.none());
+    }
 
     /**
      * Un option se puede filtar, y mostrar un some() o un none si no encuentra el resultado
