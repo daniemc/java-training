@@ -118,6 +118,31 @@ public class TrySuite {
                 transform);
     }
 
+    @Test
+    public void testSuccessTransform2() {
+        Try<Integer> number = Try.of(() -> 5);
+        Try<Integer> transform = number.transform(self -> self);
+
+        assertEquals("Failure - it should transform the number to text",
+                Success(5),
+                transform);
+    }
+
+    @Test
+    public void testMap(){
+
+        Try<Integer> stringLength1 = Try.of(() -> "Daniel")
+                .map(str -> str.length());
+
+        // or separate
+
+        Try<String> string2 = Try.of(() -> "Daniel");
+        Try<Integer> stringLength2 = string2.map(str -> str.length());
+
+        assertEquals(Success(6), stringLength1);
+        assertEquals(Success(6), stringLength2);
+    }
+
     /**
      * La funcionalidad transform va a generar error sobre un try con error.
      */
@@ -330,6 +355,14 @@ public class TrySuite {
                 Try.failure(new ArithmeticException("/ by zero")).toString() ,
                 aTry2.toString());
     }
+
+    @Test
+    public void testTryAndRecoverWith2() {
+        Try<Integer> aTry = Try.of(() -> 2/0).recover(ArithmeticException.class, 2);
+
+        assertEquals("Does not recover of 2/0", Try.of(() -> 2), aTry);
+
+    }
     /**
      *  El Recover retorna el valor a recuperar, pero sin Try, permitiendo que lance un Exception
      *  si, falla
@@ -355,6 +388,56 @@ public class TrySuite {
         };
         Try<Integer> aTry = Try.of(() -> 2).mapTry(checkedFunction1);
         assertEquals("Failed the checkedFuntion", Success(1),aTry);
+    }
+
+
+    private Try<Integer> add(int num1, int num2){
+        return Try.of(() -> num1 + num2);
+    }
+
+    private Try<Integer> divide(int num1, int num2){
+        return Try.of(() -> num1 / num2);
+    }
+
+    @Test
+    public void tryMonadicComposition(){
+        Try<Integer> result = add(2, 2)
+                .flatMap(res1 -> add(res1, -4)
+                    .flatMap(res2 -> divide(res2, res2)));
+
+        assertTrue(result.isFailure());
+    }
+
+    @Test
+    public void tryMonadicCompositionFor(){
+        Try<Integer> result =
+                For(add(2, 2), r1 ->
+                For(add(r1, -4), r2 ->
+                    divide(r2, r2))).toTry();
+
+        assertTrue(result.isFailure());
+    }
+
+    @Test
+    public void tryMonadicCompositionRecovery(){
+        Try<Integer> result = add(2, 2)
+                .flatMap(res1 -> add(res1, -4)
+                        .flatMap(res2 -> divide(res2, res2).recover(Exception.class, -1)));
+
+        assertEquals(Success(-1), result);
+    }
+
+    private Try<Integer> divideWithRecover(int num1, int num2){
+        return Try.of(() -> num1 / num2).recoverWith(Exception.class, Try.of(() -> -1));
+    }
+
+    @Test
+    public void tryMonadicCompositionRecoverWith(){
+        Try<Integer> result = add(2, 2)
+                .flatMap(res1 -> add(res1, -4)
+                        .flatMap(res2 -> divideWithRecover(res2, res2)));
+
+        assertEquals(Success(-1), result);
     }
 
 }
