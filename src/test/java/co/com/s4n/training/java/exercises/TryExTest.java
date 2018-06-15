@@ -113,4 +113,13 @@ public class TryExTest {
 
         assertEquals(Success(10.0), result);
     }
+
+    @Test
+    public void noFailInMiddleTest(){
+        Try<Double> result = NumberOperationsTry.add(1.0, 1.0)
+                .flatMap(r1 -> NumberOperationsTry.divide(r1, 1.0).recover(Exception.class, 5.0)
+                        .flatMap(r2 -> NumberOperationsTry.add(r2, 5.0)));
+
+        assertEquals(Success(7.0), result);
+    }
 }
