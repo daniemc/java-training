@@ -14,7 +14,7 @@ public class NumberOperations {
     }
 
     public static Option<Double> miltiply(Double num1, Double num2){
-        return Option.of(num1 + num2);
+        return Option.of(num1 * num2);
     }
 
     public static Option<Double> divide(Double num1, Double num2){
