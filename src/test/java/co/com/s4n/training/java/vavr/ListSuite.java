@@ -3,6 +3,7 @@ package co.com.s4n.training.java.vavr;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -16,6 +17,7 @@ import static org.junit.Assert.*;
  */
 
 public class ListSuite {
+
 
     /**
      * Lo que sucede cuando se intenta crear un lista de null
@@ -37,6 +39,24 @@ public class ListSuite {
     }
 
     @Test
+    public void testingZipSameSize(){
+        List<Integer> list1 = List.of(1, 2, 3);
+        List<Integer> list2 = List.of(1, 2, 3);
+        List<Tuple2<Integer, Integer>> zip = list1.zip(list2);
+
+        assertEquals(zip.headOption().getOrElse(new Tuple2(0, 0)), new Tuple2(1, 1));
+    }
+
+    @Test
+    public void testingZipDiffSize(){
+        List<Integer> list1 = List.of(1, 2, 3, 4);
+        List<Integer> list2 = List.of(1, 2, 3);
+        List<Tuple2<Integer, Integer>> zip = list1.zip(list2);
+
+        assertEquals(zip.headOption().getOrElse(new Tuple2(0, 0)), new Tuple2(1, 1));
+    }
+
+    @Test
     public void testHead(){
         List<Integer> list1 = List.of(1,2,3);
         Integer head = list1.head();
@@ -49,6 +69,37 @@ public class ListSuite {
         List<Integer> expectedTail = List.of(2,3);
         List<Integer> tail = list1.tail();
         assertEquals(tail, expectedTail);
+    }
+
+    @Test
+    public void testTailSize1(){
+        List<Integer> list1 = List.of(1);
+        List<Integer> expectedTail = List.of();
+        List<Integer> tail = list1.tail();
+        assertEquals(tail, expectedTail);
+    }
+
+    @Test(expected = java.util.NoSuchElementException.class)
+    public void testHeadSize0(){
+        List<Integer> list1 = List.of();
+        Integer expetedHead = 0;
+        Integer head = list1.head();
+        assertEquals(head, expetedHead);
+    }
+
+    @Test
+    public void testHeadOptionSize0(){
+        List<Integer> list1 = List.of();
+        Option head = list1.headOption();
+        assertEquals(head, Option.none());
+    }
+
+    @Test
+    public void testHeadOptionSize1(){
+        List<Integer> list1 = List.of(1, 2, 3);
+        Option head = list1.headOption();
+        assertEquals(head, Option.some(1));
+        assertEquals(1, head.getOrElse(1));
     }
 
     @Test
@@ -157,6 +208,37 @@ public class ListSuite {
                 Tuple.of("B", List.of("A")), list.pop2());
     }
 
+    @Test
+    public void testListEmpty() {
+        List<String> list = List.of();
+        Option list2 = list.popOption();
+
+        assertEquals(list2, Option.none());
+
+    }
+
+    @Test
+    public void testListPopTailDiff(){
+        List<String> list = List.of("A", "B", "C", "D");
+        assertEquals(list.tail(), list.pop());
+    }
+
+    @Test
+    public void testListPop2(){
+        List<String> list = List.of("A", "B", "C", "D");
+        Tuple2<String, List <String>> pop2FromList = list.pop2();
+        System.out.println(pop2FromList);
+        assertEquals(pop2FromList._1, "A");
+        assertEquals(pop2FromList._2, List.of("B", "C", "D"));
+    }
+
+    @Test(expected = java.util.NoSuchElementException.class)
+    public void testEmptyListPop2(){
+        List<String> list = List.of();
+        Tuple2<String, List <String>> pop2FromEmptyList = list.pop2();
+        System.out.println(pop2FromEmptyList);
+    }
+
     /**
      * Una lista de vavr se comporta como una pila ya que guarda y
      * retorna sus elementos como LIFO.
@@ -197,10 +279,41 @@ public class ListSuite {
         List<Integer> myListOne = List.ofAll(2, 4, 3);
         List<Integer> myListRes = myList.takeWhile(j -> j < 8);
         List<Integer> myListResOne = myListOne.takeWhile(j -> j > 2);
+        System.out.println(myListRes);
+        System.out.println(myListResOne);
         assertTrue("List with values less than eight", myListRes.nonEmpty());
         assertEquals("List with length of two", 2, myListRes.length());
         assertEquals("List with last value six", new Integer(6), myListRes.last());
         assertTrue("List with values greater than two", myListResOne.isEmpty());
+    }
+
+    @Test
+    public void testFold(){
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        Integer foldRes = list.fold(5, (a, el) -> a + el);
+        assertEquals(foldRes.intValue(), 20);
+    }
+
+    @Test
+    public void testFoldLeftDiffFoldRight() {
+        List<String> list = List.of("A", "B");
+        String foldLeftRes = list.foldLeft("", (a, el) -> a + el);
+        String foldRightRes = list.foldRight("", (el, a) -> a + el);
+
+        assertEquals("AB", foldLeftRes);
+        assertEquals("BA", foldRightRes);
+    }
+
+    @Test
+    public void testFoldLeftDiffFoldRight_paramFunctionPosition() {
+        List<String> list = List.of("A", "B");
+        String foldLeftRes = list.foldLeft("", (a, el) -> a + el);
+
+        // this should give different value because function params must be in invert order
+        String foldRightRes = list.foldRight("", (a, el) -> a + el);
+
+        assertEquals("AB", foldLeftRes);
+        assertNotEquals("BA", foldRightRes);
     }
 
     /**
