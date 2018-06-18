@@ -154,16 +154,12 @@ public class FutureSuite {
     }
 
     public Future<String> myFold(List<Future<String>> futures, String zero, BiFunction<String, String, String> bf) {
-        String res = zero;
-        //String res2 = futures.flatMap(future -> {
-        //    return future.flatMap(string -> {
-        //        System.out.println(string);
-        //        return Future.of(() -> List.of(""));
-        //    });
-        //});
-        // Future<String> res2 = futures.flatMap(future -> future.flatMap(string -> Future.of(()-> bf.apply(res, string)));
-        //futures.flatMap(value -> Future.of(() -> bf.apply(res, value.get())));
-        return Future.of(() -> res);
+        final String[] res = {zero};
+        futures.flatMap(value -> Future.of(() -> {
+            res[0] = bf.apply(res[0], value.get());
+            return Future.of(() -> "");
+        }));
+        return Future.of(() -> res[0]);
     }
 
     @Test
