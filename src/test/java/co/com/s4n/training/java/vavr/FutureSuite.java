@@ -155,10 +155,15 @@ public class FutureSuite {
 
     public Future<String> myFold(List<Future<String>> futures, String zero, BiFunction<String, String, String> bf) {
         final String[] res = {zero};
-        futures.flatMap(value -> Future.of(() -> {
-            res[0] = bf.apply(res[0], value.get());
-            return Future.of(() -> "");
-        }));
+        // futures.flatMap(value -> Future.of(() -> {
+        //    res[0] = bf.apply(res[0], value.get());
+        //    return Future.of(() -> "");
+        // }));
+
+        for(Future future : futures){
+            res[0] = bf.apply(res[0], future.get().toString());
+        }
+
         return Future.of(() -> res[0]);
     }
 
@@ -171,11 +176,19 @@ public class FutureSuite {
         Future<String> f5 = Future.of(() -> "e");
         Future<String> f6 = Future.of(() -> "l");
 
-        Future<String> myFuture = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y);
-        myFuture.await();
-        System.out.println(myFuture);
-        assertEquals("Daniel", myFuture.get());
-        System.out.println(myFuture);
+        Future<String> myFuture1 = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y);
+        Future<String> myFuture2 = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y + "/");
+        Future<String> myFuture3 = myFold(List.of(f1, f2, f3, f4, f5, f6), "My name is: ", (x, y) -> x + y);
+        myFuture1.await();
+        myFuture2.await();
+        myFuture3.await();
+        System.out.println(myFuture1);
+        System.out.println(myFuture2);
+        System.out.println(myFuture3);
+        assertEquals("Daniel", myFuture1.get());
+        assertEquals("D/a/n/i/e/l/", myFuture2.get());
+        assertEquals("My name is: Daniel", myFuture3.get());
+
     }
 
     /**
