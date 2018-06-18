@@ -177,16 +177,19 @@ public class FutureSuite {
         Future<String> f6 = Future.of(() -> "l");
 
         Future<String> myFuture1 = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y);
-        Future<String> myFuture2 = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y + "/");
+        Future<String> myFuture2 = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y + "-");
         Future<String> myFuture3 = myFold(List.of(f1, f2, f3, f4, f5, f6), "My name is: ", (x, y) -> x + y);
+
         myFuture1.await();
         myFuture2.await();
         myFuture3.await();
+
         System.out.println(myFuture1);
         System.out.println(myFuture2);
         System.out.println(myFuture3);
+        
         assertEquals("Daniel", myFuture1.get());
-        assertEquals("D/a/n/i/e/l/", myFuture2.get());
+        assertEquals("D-a-n-i-e-l-", myFuture2.get());
         assertEquals("My name is: Daniel", myFuture3.get());
 
     }
