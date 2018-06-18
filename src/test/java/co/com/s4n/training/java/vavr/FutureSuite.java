@@ -743,11 +743,6 @@ public class FutureSuite {
 
     @Test
     public void testEx(){
-        //Declarar 3 futuros
-        //cada uno va a tener latencias simuladas (sleeps) (500, 800, 300)
-        //programa con flapMap
-        //campurar en future resultado
-        // capturar inicio y fin en sistem.nanotime()
 
         Long start = System.nanoTime();
 
@@ -776,5 +771,6 @@ public class FutureSuite {
         Long finish = System.nanoTime();
         long durationInMs = TimeUnit.MILLISECONDS.convert(finish - start, TimeUnit.NANOSECONDS);
         System.out.println(durationInMs);
+        assertTrue(durationInMs >= 800);
     }
 }
