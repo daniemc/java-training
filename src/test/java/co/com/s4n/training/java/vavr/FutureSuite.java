@@ -9,6 +9,8 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import io.vavr.concurrent.Promise;
 import org.junit.Test;
+import sun.reflect.misc.FieldUtil;
+
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
@@ -737,5 +739,42 @@ public class FutureSuite {
         myFutureOne.await();
         assertEquals("Failure - Validate Future with Promise",new Integer(15),myFutureOne.get());
         assertFalse("Failure - Validate myFuture is not complete",myFuture.isCompleted());
+    }
+
+    @Test
+    public void testEx(){
+        //Declarar 3 futuros
+        //cada uno va a tener latencias simuladas (sleeps) (500, 800, 300)
+        //programa con flapMap
+        //campurar en future resultado
+        // capturar inicio y fin en sistem.nanotime()
+
+        Long start = System.nanoTime();
+
+        Future<String> f1 = Future.of(() -> {
+            Thread.sleep(500);
+            return "1";
+        });
+
+        Future<String> f2 = Future.of(() -> {
+            Thread.sleep(800);
+            return "2";
+        });
+
+        Future<String> f3 = Future.of(() -> {
+            Thread.sleep(300);
+            return "3";
+        });
+
+
+        Future<String> f4 = f1.
+                flatMap(f1s -> f2.
+                        flatMap(f2s -> f3.
+                                flatMap(f3s -> Future.of(() -> f1s + f2s + f3s))));
+        f4.await();
+
+        Long finish = System.nanoTime();
+        long durationInMs = TimeUnit.MILLISECONDS.convert(finish - start, TimeUnit.NANOSECONDS);
+        System.out.println(durationInMs);
     }
 }
