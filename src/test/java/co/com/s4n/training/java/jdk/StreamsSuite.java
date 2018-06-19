@@ -1,9 +1,15 @@
 package co.com.s4n.training.java.jdk;
 
-import static org.junit.Assert.*;
+
 
 import co.com.s4n.training.java.*;
-import org.junit.Test;
+import org.junit.platform.runner.IncludeEngines;
+import org.junit.platform.runner.JUnitPlatform;
+
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,6 +18,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@RunWith(JUnitPlatform.class)
+@IncludeEngines("junit-jupiter")
 public class StreamsSuite {
     @Test
     public void smokeTest() {
@@ -100,7 +108,7 @@ public class StreamsSuite {
                 .map(n -> 2 * n + 1)
                 .average();
 
-        assertEquals(5D,average.orElseGet(()->666),0D);
+        assertEquals(5D,average.orElseGet(()->666));
 
     }
 
@@ -287,17 +295,21 @@ public class StreamsSuite {
 
     }
 
-    @Test(expected = java.lang.IllegalStateException.class)
-    public void testStreams14() {
-        Stream<String> stream =
-                Stream.of("d2", "a2", "b1", "b3", "c")
-                        .filter(s -> s.startsWith("a"));
+    @Test
+    public void testStreams14() throws Exception {
 
-        boolean b = stream.anyMatch(s -> true);
-        assertTrue(b);
+        assertThrows(Exception.class, () -> {
 
-        //Un stream no se puede volver a usar despues de haberse ejecutado una operacion final sobre el :(
-        stream.noneMatch(s -> true);
+            Stream<String> stream =
+                    Stream.of("d2", "a2", "b1", "b3", "c")
+                            .filter(s -> s.startsWith("a"));
+
+            boolean b = stream.anyMatch(s -> true);
+            assertTrue(b);
+
+            //Un stream no se puede volver a usar despues de haberse ejecutado una operacion final sobre el :(
+            stream.noneMatch(s -> true);
+        });
     }
 
     @Test
@@ -400,7 +412,7 @@ public class StreamsSuite {
                 .stream()
                 .collect(Collectors.averagingInt(p -> p.age));
 
-        assertEquals(averageAge, 19D, 0D);
+        assertEquals(new Double(19), averageAge);
 
     }
 

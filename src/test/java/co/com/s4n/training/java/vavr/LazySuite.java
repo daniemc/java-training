@@ -2,13 +2,20 @@ package co.com.s4n.training.java.vavr;
 
 import io.vavr.Lazy;
 import io.vavr.concurrent.Future;
-import org.junit.Test;
+import org.junit.platform.runner.IncludeEngines;
+import org.junit.platform.runner.JUnitPlatform;
+
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static org.junit.Assert.assertTrue;
 
+@RunWith(JUnitPlatform.class)
+@IncludeEngines("junit-jupiter")
 public class LazySuite {
 
     public void sleep(Integer ms){

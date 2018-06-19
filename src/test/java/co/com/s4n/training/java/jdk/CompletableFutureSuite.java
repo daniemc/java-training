@@ -1,16 +1,24 @@
 package co.com.s4n.training.java.jdk;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+
 
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.platform.runner.IncludeEngines;
+import org.junit.platform.runner.JUnitPlatform;
+
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
+@RunWith(JUnitPlatform.class)
+@IncludeEngines("junit-jupiter")
 public class CompletableFutureSuite {
 
     public void printMessage(String message){
