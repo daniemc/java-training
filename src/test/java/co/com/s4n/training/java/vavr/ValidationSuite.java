@@ -322,7 +322,7 @@ public class ValidationSuite
                 invalidList.add("Error " + invalidList.size());
             }
         };
-        
+
         validation.forEach(consumer);
         assertTrue(validList.size() == 3);
         assertTrue(invalidList.size() == 3);
