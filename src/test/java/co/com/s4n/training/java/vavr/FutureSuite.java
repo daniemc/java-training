@@ -1,5 +1,6 @@
 package co.com.s4n.training.java.vavr;
 
+import co.com.s4n.training.java.Custom;
 import io.vavr.Function1;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
@@ -176,9 +177,10 @@ public class FutureSuite {
         Future<String> f5 = Future.of(() -> "e");
         Future<String> f6 = Future.of(() -> "l");
 
-        Future<String> myFuture1 = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y);
-        Future<String> myFuture2 = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y + "-");
-        Future<String> myFuture3 = myFold(List.of(f1, f2, f3, f4, f5, f6), "My name is: ", (x, y) -> x + y);
+        // Future<String> myFuture1 = myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y);
+        Future<String> myFuture1 = Custom.myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y);
+        Future<String> myFuture2 = Custom.myFold(List.of(f1, f2, f3, f4, f5, f6), "", (x, y) -> x + y + "-");
+        Future<String> myFuture3 = Custom.myFold(List.of(f1, f2, f3, f4, f5, f6), "My name is: ", (x, y) -> x + y);
 
         myFuture1.await();
         myFuture2.await();
@@ -192,6 +194,19 @@ public class FutureSuite {
         assertEquals("D-a-n-i-e-l-", myFuture2.get());
         assertEquals("My name is: Daniel", myFuture3.get());
 
+    }
+
+    @Test
+    public void testMyCustomFold(){
+        Future<Integer> f1 = Future.of(() -> 1);
+        Future<Integer> f2 = Future.of(() -> 1);
+        Future<Integer> f3 = Future.of(() -> 1);
+
+        Future<Integer> sum = Custom.myFold(List.of(f1, f2, f3), 5, (x, y) -> x+y);
+
+        sum.await();
+        System.out.println(sum.get());
+        assertEquals(new Integer(8), sum.get());
     }
 
     /**
